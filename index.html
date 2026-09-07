@@ -1,69 +1,3 @@
-<script>
-async function answerDate(answer) {
-
-    const buttons = document.querySelectorAll("#answerButtons button");
-    const message = document.getElementById("answerMessage");
-
-    buttons.forEach(btn => btn.disabled = true);
-
-    const textAnswer = answer === "yes" ? "JA ❤️" : "NEIN 🥺";
-
-    try {
-
-        const response = await fetch("https://formspree.io/f/mrpgyqdp", {
-            method: "POST",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                antwort: textAnswer,
-                zeit: new Date().toLocaleString("de-DE"),
-                frage: "Hast du heute Abend Lust auf ein kleines Date mit mir?"
-            })
-        });
-
-        const result = await response.json();
-
-        console.log("Formspree Response:", result);
-
-        if (!response.ok) {
-            throw new Error(
-                result.error ||
-                result.message ||
-                "HTTP " + response.status
-            );
-        }
-
-        document.getElementById("answerButtons").style.display = "none";
-
-        if (answer === "yes") {
-
-            message.innerHTML =
-                "YAAAAAY 🥹❤️<br>" +
-                "Dann mach dich heute Abend bereit... 👀✨";
-
-            heartExplosion();
-
-        } else {
-
-            message.innerHTML =
-                "Wie hast du den Button überhaupt erwischt?! 😭😂<br>" +
-                "Okayyy 🥺❤️";
-        }
-
-    } catch (error) {
-
-        console.error(error);
-
-        message.innerHTML =
-            "Fehler: " + error.message;
-
-        buttons.forEach(btn => btn.disabled = false);
-    }
-}
-</script>
-
 <!DOCTYPE html>
 <html lang="de">
 
@@ -866,138 +800,83 @@ function runAway(event) {
 
 async function answerDate(answer) {
 
-    const buttons =
-        document.querySelectorAll(
-            "#answerButtons button"
-        );
+    const buttons = document.querySelectorAll("#answerButtons button");
+    const message = document.getElementById("answerMessage");
 
-    const message =
-        document.getElementById(
-            "answerMessage"
-        );
+    buttons.forEach(btn => btn.disabled = true);
 
-
-    buttons.forEach(btn => {
-
-        btn.disabled = true;
-
-    });
-
-
-    const data =
-        new FormData();
-
-    data.append(
-        "answer",
-        answer
-    );
-
+    const textAnswer =
+        answer === "yes"
+            ? "JA ❤️"
+            : "NEIN 🥺";
 
     try {
 
-        const response =
-            await fetch(
-                window.location.href,
-                {
-                    method: "POST",
-                    body: data
-                }
-            );
+        const response = await fetch(
+            "https://formspree.io/f/mrpgyqdp",
+            {
+                method: "POST",
 
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
 
-        const result =
-            await response.json();
+                body: JSON.stringify({
+                    antwort: textAnswer,
+                    zeit: new Date().toLocaleString("de-DE"),
+                    frage: "Hast du heute Abend Lust auf ein Date mit mir?"
+                })
+            }
+        );
 
+        const result = await response.json();
 
-        if (!result.success) {
+        console.log("Formspree:", result);
 
+        if (!response.ok) {
             throw new Error(
-                "E-Mail konnte nicht gesendet werden."
+                result.error ||
+                result.message ||
+                "HTTP Fehler " + response.status
             );
-
         }
 
-
-        /*
-           Buttons verschwinden
-        */
-
-        document.getElementById(
-            "answerButtons"
-        ).style.display = "none";
-
-
-        /* ==========================
-           JA
-           ========================== */
+        document.getElementById("answerButtons").style.display = "none";
 
         if (answer === "yes") {
 
             message.innerHTML =
-
                 "YAAAAAY 🥹❤️<br>" +
-
                 "Dann mach dich heute Abend bereit... 👀✨";
-
 
             heartExplosion();
 
-
             setTimeout(() => {
-
-                document.getElementById(
-                    "datePopup"
-                ).style.display = "none";
-
+                document.getElementById("datePopup").style.display = "none";
             }, 4500);
 
-        }
-
-
-        /* ==========================
-           NEIN
-           ========================== */
-
-        else {
+        } else {
 
             message.innerHTML =
-
                 "Wie hast du den Button überhaupt erwischt?! 😭😂<br>" +
-
                 "Okayyy 🥺❤️";
 
-
             setTimeout(() => {
-
-                document.getElementById(
-                    "datePopup"
-                ).style.display = "none";
-
+                document.getElementById("datePopup").style.display = "none";
             }, 4000);
-
         }
 
-    }
+    } catch(error) {
 
-    catch(error) {
+        console.error("Fehler:", error);
 
         message.innerHTML =
+            "Fehler: " + error.message;
 
-            "Ups 🥲<br>" +
-
-            "Da ist etwas schiefgelaufen.";
-
-
-        buttons.forEach(btn => {
-
-            btn.disabled = false;
-
-        });
-
+        buttons.forEach(btn => btn.disabled = false);
     }
-
 }
-
 
 
 /* =========================================================
